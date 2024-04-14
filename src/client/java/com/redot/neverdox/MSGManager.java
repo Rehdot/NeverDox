@@ -48,6 +48,7 @@ public class MSGManager {
         sendPlayerMessage("?nd addexempt (phrase) <- Adds an exempt phrase to the logger");
         sendPlayerMessage("?nd remove (phrase) <- Removes a phrase from the logger");
         sendPlayerMessage("?nd open <- Opens the NeverDox config file");
+        sendPlayerMessage("?nd sendwebhook <- Sends a webhook message to your link");
         sendPlayerMessage("?nd help <- See this message again");
     }
 

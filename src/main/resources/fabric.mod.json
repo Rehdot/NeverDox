@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.redot.neverdox.NeverDox"
+			"com.redot.neverdox.NeverDoxMain"
 		],
 		"client": [
-			"com.redot.neverdox.NeverDoxClient"
+			"com.redot.neverdox.NeverDox"
 		]
 	},
 	"mixins": [

@@ -1,7 +1,6 @@
 package com.redot.neverdox;
 
 import com.google.gson.*;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
