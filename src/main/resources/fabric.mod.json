@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "neverdox",
+	"version": "${version}",
+	"name": "NeverDox",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/neverdox/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.redot.neverdox.NeverDox"
+		],
+		"client": [
+			"com.redot.neverdox.NeverDoxClient"
+		]
+	},
+	"mixins": [
+		"neverdox.mixins.json",
+		{
+			"config": "neverdox.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.9",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
