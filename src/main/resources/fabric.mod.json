@@ -3,13 +3,13 @@
 	"id": "neverdox",
 	"version": "${version}",
 	"name": "NeverDox",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A fabric mod to keep Minecraft players safe.",
 	"authors": [
-		"Me!"
+		"Redot"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://oneofus.pizza.systems/",
+		"sources": "https://github.com/Rehdot/NeverDox/"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/neverdox/icon.png",
