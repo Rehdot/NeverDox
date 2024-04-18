@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public class SendChatMessageMixin {
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void interceptSendChatMessage(String message, CallbackInfo ci) {
-        if (message.startsWith("?nd")) {
+        if (message.toLowerCase().startsWith("?nd")) {
             ci.cancel();
             CompletableFuture.runAsync(() -> {
                 try {NeverDox.formatTextAndRunCommand(message);}

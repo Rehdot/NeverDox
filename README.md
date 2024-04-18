@@ -1,4 +1,4 @@
-**NeverDox 1.0.2**
+**NeverDox 1.0.3**
 
 NeverDox is a client-side Minecraft mod to keep players safe on public servers.
 It's intended to be a moderation tool which reports in-game chat messages to discord webhooks based upon the filters & exemptions that its user provides.

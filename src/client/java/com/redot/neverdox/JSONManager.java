@@ -18,8 +18,10 @@ public class JSONManager {
         File file = new File(FILE_NAME);
         if (!file.exists()) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("webhook", "Paste your webhook here!");
             JsonArray phrasesArray = new JsonArray();
+
+            jsonObject.addProperty("webhook", "Paste your webhook here!");
+            jsonObject.addProperty("dispatch", 0);
             jsonObject.add("phrases", phrasesArray);
 
             try (FileWriter writer = new FileWriter(FILE_NAME)) {
@@ -32,6 +34,24 @@ public class JSONManager {
         }
 
         return file;
+    }
+
+    public static int incrementDispatchNumber() {
+        int dispatchNumber = 0;
+
+        try (FileReader reader = new FileReader(FILE_NAME)) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+            dispatchNumber = jsonObject.getAsJsonPrimitive("dispatch").getAsInt();
+            jsonObject.addProperty("dispatch", dispatchNumber + 1);
+
+            try (FileWriter writer = new FileWriter(FILE_NAME)) {
+                gson.toJson(jsonObject, writer);
+            } catch (IOException ignored) {}
+
+        } catch (IOException ignored) {}
+
+        return dispatchNumber + 1;
     }
 
     public static void addPhraseToJSON(String text, boolean exempt, boolean ping) {

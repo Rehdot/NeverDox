@@ -14,7 +14,6 @@ public class NeverDox implements ClientModInitializer {
 
 	public static final String appDataDir = System.getenv("APPDATA"), minecraftDir = appDataDir + "/.minecraft";
 	public static boolean alreadySentSetup = false, enabled = true;
-	public static int counter = 1;
 
 	@Override
 	public void onInitializeClient() {
@@ -78,7 +77,7 @@ public class NeverDox implements ClientModInitializer {
 			connection.setDoOutput(true);
 
 			String pingString = ping ? "@everyone\\n" : "";
-			String payload = "{\"content\":\"" + pingString + "**NeverDox Dispatch #" + counter++ + "**\\nFiltered terms: *"
+			String payload = "{\"content\":\"" + pingString + "**NeverDox Dispatch #" + JSONManager.incrementDispatchNumber() + "**\\nFiltered terms: *"
 					+ matchesString + "*\\n```" + message + "```\", \"username\":\"NeverDox\"}";
 
 			OutputStream outputStream = null;

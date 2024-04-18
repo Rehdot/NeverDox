@@ -5,10 +5,12 @@ import java.util.List;
 public class NDCommand {
 
     public static void processCommand(String subCommand, String phrase) {
+        String msg;
+
         switch (subCommand.toLowerCase()) {
             case "toggle":
                 NeverDox.enabled = !NeverDox.enabled;
-                String msg = NeverDox.enabled ? "Enabled NeverDox Dispatch." : "Disabled NeverDox Dispatch.";
+                msg = NeverDox.enabled ? "Enabled NeverDox Dispatch." : "Disabled NeverDox Dispatch.";
                 MSGManager.sendCheckupMessage(msg);
                 break;
             case "add":
