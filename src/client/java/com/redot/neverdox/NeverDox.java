@@ -22,6 +22,8 @@ public class NeverDox implements ClientModInitializer {
 
 	public static void handleChatMessage(String message) throws IOException {
 
+		// to fix backslashes not sending in discord webhooks
+		message = message.replace("\\", "\\\\");
 		String lowerCaseMsg = message.toLowerCase();
 		boolean ping = false;
 

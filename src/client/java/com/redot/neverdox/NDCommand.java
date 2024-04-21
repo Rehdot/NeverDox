@@ -10,8 +10,12 @@ public class NDCommand {
         switch (subCommand.toLowerCase()) {
             case "toggle":
                 NeverDox.enabled = !NeverDox.enabled;
-                msg = NeverDox.enabled ? "Enabled NeverDox Dispatch." : "Disabled NeverDox Dispatch.";
-                MSGManager.sendCheckupMessage(msg);
+                msg = NeverDox.enabled ? "Enabled" : "Disabled";
+                MSGManager.sendCheckupMessage(msg + " NeverDox Dispatch.");
+                break;
+            case "status":
+                MSGManager.sendCheckupMessage("Reporting Status...");
+                MSGManager.sendStatusUpdate();
                 break;
             case "add":
                 JSONManager.addPhraseToJSON(phrase, false, false);

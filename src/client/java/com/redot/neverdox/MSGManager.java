@@ -15,13 +15,13 @@ public class MSGManager {
         MutableText bracketR = Text.literal("]")
                 .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x333333)));
 
-        MutableText playerNameComponent = Text.literal("NeverDox")
+        MutableText neverDox = Text.literal("NeverDox")
                 .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8B0000)).withBold(true));
 
         MutableText messageComponent = Text.literal(" " + message)
                 .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAAAA)));
 
-        MutableText messageText = bracketL.append(playerNameComponent).append(bracketR).append(messageComponent);
+        MutableText messageText = bracketL.append(neverDox).append(bracketR).append(messageComponent);
         MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(messageText);
     }
 
@@ -29,6 +29,25 @@ public class MSGManager {
         MutableText msg = Text.literal(message)
                 .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAAAA)));
         MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(msg);
+    }
+
+    public static void sendStatusMessage(String statusID, MutableText statusActual) {
+        MutableText bracketL = Text.literal("[").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x333333)));
+        MutableText bracketR = Text.literal("]").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x333333)));
+        MutableText neverDox = Text.literal("ND").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8B0000)).withBold(true));
+        MutableText statusIdentifier = Text.literal(statusID).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAAAA)));
+
+        MutableText messageComponent = Text.literal(" ").append(statusIdentifier).append(statusActual);
+        MutableText messageText = bracketL.append(neverDox).append(bracketR).append(messageComponent);
+        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(messageText);
+    }
+
+    public static void sendStatusUpdate() {
+        MutableText enabled = Text.literal("Enabled").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x2EFF2E)));
+        MutableText disabled = Text.literal("Disabled").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8B0000)));
+
+        sendStatusMessage("Dispatch: ", NeverDox.enabled ? enabled : disabled);
+        sendStatusMessage("Webhook Config: ", NeverDox.webhookCheck() ? enabled : disabled);
     }
 
     public static void setupText() {

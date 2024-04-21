@@ -19,6 +19,7 @@ It has command support for:
 - Removing a phrase of any kind from the logger ('?nd remove (phrase)')
 - Opening the NeverDox directory which holds the webhook along with all phrases ('?nd open')
 - Repeating what you say for testing ('?nd echo (message)')
+- Reporting its current status ('?nd status')
 - Sending a test webhook message ('?nd sendwebhook')
 - Help ('?nd help')
 
