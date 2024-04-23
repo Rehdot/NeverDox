@@ -28,9 +28,7 @@ public class JSONManager {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 gson.toJson(jsonObject, writer);
                 System.out.println("[NeverDox] Created new JSON file: " + FILE_NAME);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException ignored) {}
         }
 
         return file;
@@ -96,45 +94,6 @@ public class JSONManager {
         return null;
     }
 
-    public static PhraseDetails getPhrase(String text) {
-        try (FileReader reader = new FileReader(FILE_NAME)) {
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            JsonArray phrasesArray = jsonObject.getAsJsonArray("phrases");
-
-            for (JsonElement element : phrasesArray) {
-                JsonObject phraseObject = element.getAsJsonObject();
-                String phraseText = phraseObject.get("text").getAsString();
-                if (phraseText.equals(text)) {
-                    boolean exempt = phraseObject.get("exempt").getAsBoolean();
-                    boolean ping = phraseObject.get("pings").getAsBoolean();
-                    return new PhraseDetails(text, exempt, ping);
-                }
-            }
-        } catch (IOException e) {
-            MSGManager.sendCheckupMessage("Instance of '" + text + "' not found in NeverDox directory.");
-        }
-        return null;
-    }
-
-    public static List<String> getAllPhrases() {
-        List<String> allPhrases = new ArrayList<>();
-        try (FileReader reader = new FileReader(FILE_NAME)) {
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            JsonArray phrasesArray = jsonObject.getAsJsonArray("phrases");
-
-            for (JsonElement element : phrasesArray) {
-                JsonObject phraseObject = element.getAsJsonObject();
-                String phraseText = phraseObject.get("text").getAsString();
-                allPhrases.add(phraseText);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return allPhrases;
-    }
-
     public static List<PhraseDetails> getAllFullPhrases() {
         List<PhraseDetails> allPhrases = new ArrayList<>();
         try (FileReader reader = new FileReader(FILE_NAME)) {
@@ -146,20 +105,8 @@ public class JSONManager {
                 PhraseDetails details = gson.fromJson(element, PhraseDetails.class);
                 allPhrases.add(details);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
         return allPhrases;
-    }
-
-    public static List<PhraseDetails> getAllExemptPhrases() {
-        List<PhraseDetails> exemptPhrases = new ArrayList<>();
-
-        for (PhraseDetails phraseDetail : getAllFullPhrases()) {
-            if (phraseDetail.isExempt()) exemptPhrases.add(phraseDetail);
-        }
-
-        return exemptPhrases;
     }
 
     public static void removePhrase(String text) {

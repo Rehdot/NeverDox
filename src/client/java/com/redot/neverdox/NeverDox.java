@@ -13,7 +13,7 @@ import java.util.Objects;
 public class NeverDox implements ClientModInitializer {
 
 	public static final String appDataDir = System.getenv("APPDATA"), minecraftDir = appDataDir + "/.minecraft";
-	public static boolean alreadySentSetup = false, enabled = true;
+	public static boolean sentSetup = false, sentPopup = false, enabled = true;
 
 	@Override
 	public void onInitializeClient() {
@@ -142,8 +142,8 @@ public class NeverDox implements ClientModInitializer {
 
 	// there's probably a better solution to this
 	public static boolean webhookCheck() {
-		if (alreadySentSetup) return true;
-		alreadySentSetup = true;
+		if (sentSetup) return true;
+		sentSetup = true;
 		return Objects.requireNonNull(JSONManager.getWebhook()).toLowerCase().contains("discord");
 	}
 

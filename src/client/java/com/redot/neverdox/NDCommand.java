@@ -11,7 +11,7 @@ public class NDCommand {
             case "toggle":
                 NeverDox.enabled = !NeverDox.enabled;
                 msg = NeverDox.enabled ? "Enabled" : "Disabled";
-                MSGManager.sendCheckupMessage(msg + " NeverDox Dispatch.");
+                MSGManager.sendPopupText(msg + " Dispatch.");
                 break;
             case "status":
                 MSGManager.sendCheckupMessage("Reporting Status...");
@@ -31,20 +31,19 @@ public class NDCommand {
                 else {MSGManager.sendCheckupMessage("Specify a phrase to remove!");}
                 break;
             case "open":
-                MSGManager.sendCheckupMessage("Attempting to open NeverDox directory...");
+                MSGManager.sendPopupText("Attempting to open ND directory...");
                 NeverDox.openFile(JSONManager.neverDoxConfig);
                 break;
             case "echo":
-                if (phrase != null) {MSGManager.sendCheckupMessage(phrase);}
+                if (phrase != null) MSGManager.sendCheckupMessage(phrase);
                 break;
             case "sendwebhook":
-                MSGManager.sendCheckupMessage("Attempting to send test webhook...");
+                MSGManager.sendPopupText("Attempting to send test webhook...");
                 List<String> testItems = List.of("This is a test message from NeverDox.");
                 NeverDox.sendDiscordWebhook(testItems.get(0), testItems, false);
                 break;
             case "help":
-                try {MSGManager.helpText();}
-                catch (InterruptedException ignored) {}
+                MSGManager.helpText();
                 break;
             default:
                 MSGManager.sendCheckupMessage("Command not recognized! Try '?nd help'.");
