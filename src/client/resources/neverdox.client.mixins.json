@@ -1,10 +1,9 @@
 {
 	"required": true,
-	"package": "com.redot.neverdox.mixin.client",
+	"package": "redot.neverdox.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
 		"ReceiveChatMessageMixin",
-		"SendChatMessageMixin",
 		"TitleScreenMixin"
 	],
 	"injectors": {

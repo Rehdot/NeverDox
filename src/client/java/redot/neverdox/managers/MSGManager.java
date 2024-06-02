@@ -1,4 +1,4 @@
-package com.redot.neverdox;
+package redot.neverdox.managers;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
@@ -6,6 +6,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import redot.neverdox.NeverDox;
 
 public class MSGManager {
 
@@ -54,22 +55,22 @@ public class MSGManager {
         if (!NeverDox.webhookCheck()) {
             sendPlayerMessage("Hey! I'm NeverDox, a mod to keep Minecraft players safe.");
             sendPlayerMessage("I'll log your filtered messages & send them directly to your Discord webhook!");
-            sendPlayerMessage("To get started, type '?nd open phrases' and paste your webhook in!");
+            sendPlayerMessage("To get started, type '?nd open' and paste your webhook in!");
             sendPlayerMessage("Other than that, use '?nd help' for a list of my commands!");
         }
     }
 
     public static void helpText() {
         sendCheckupMessage("My commands include:");
-        sendPlayerMessage("?nd toggle <- Toggles logging on/off");
-        sendPlayerMessage("?nd add (phrase) <- Adds a phrase to the logger");
-        sendPlayerMessage("?nd addping (phrase) <- Adds a pinged phrase to the logger");
-        sendPlayerMessage("?nd addexempt (phrase) <- Adds an exempt phrase to the logger");
-        sendPlayerMessage("?nd remove (phrase) <- Removes a phrase from the logger");
-        sendPlayerMessage("?nd open <- Opens the NeverDox config file");
-        sendPlayerMessage("?nd sendwebhook <- Sends a webhook message to your link");
-        sendPlayerMessage("?nd status <- Reports the current status to you");
-        sendPlayerMessage("?nd help <- See this message again");
+        sendPlayerMessage("/nd help <- See this message again");
+        sendPlayerMessage("/nd toggle <- Toggles logging on/off");
+        sendPlayerMessage("/nd status <- Reports NeverDox's status");
+        sendPlayerMessage("/nd open <- Opens the NeverDox config file");
+        sendPlayerMessage("/nd sendwebhook <- Sends a webhook message to your link");
+        sendPlayerMessage("/nd add (phrase) <- Adds a phrase to the logger");
+        sendPlayerMessage("/nd addping (phrase) <- Adds a pinged phrase to the logger");
+        sendPlayerMessage("/nd addexempt (phrase) <- Adds an exempt phrase to the logger");
+        sendPlayerMessage("/nd remove (phrase) <- Removes a phrase from the logger");
     }
 
 }

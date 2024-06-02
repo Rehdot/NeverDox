@@ -1,4 +1,4 @@
-package com.redot.neverdox;
+package redot.neverdox;
 
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;

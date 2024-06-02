@@ -1,6 +1,8 @@
-package com.redot.neverdox;
+package redot.neverdox.managers;
 
 import com.google.gson.*;
+import redot.neverdox.NeverDox;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -74,7 +76,7 @@ public class JSONManager {
                 String tempStr = "";
                 if (exempt) tempStr += "exemption ";
                 if (ping) tempStr += "ping ";
-                MSGManager.sendCheckupMessage("Added " + tempStr + "'" + text + "' to the NeverDox directory.");
+                MSGManager.sendCheckupMessage("Added " + tempStr + "'" + text + "' to NeverDox.");
             } catch (IOException ignored) {
                 MSGManager.sendCheckupMessage("Failed to add phrase to NeverDox directory.");
             }
@@ -133,7 +135,7 @@ public class JSONManager {
 
             try (FileWriter writer = new FileWriter(FILE_NAME)) {
                 gson.toJson(jsonObject, writer);
-                MSGManager.sendCheckupMessage("Removed '" + text + "' from NeverDox directory.");
+                MSGManager.sendCheckupMessage("Removed '" + text + "' from NeverDox.");
             } catch (IOException ignored) {}
         } catch (IOException ignored) {
             MSGManager.sendCheckupMessage("Failed to read NeverDox directory.");

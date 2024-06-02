@@ -1,12 +1,12 @@
-package com.redot.neverdox.mixin.client;
+package redot.neverdox.mixin.client;
 
-import com.redot.neverdox.MSGManager;
-import com.redot.neverdox.NeverDox;
+import redot.neverdox.NeverDox;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import redot.neverdox.managers.MSGManager;
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin {
