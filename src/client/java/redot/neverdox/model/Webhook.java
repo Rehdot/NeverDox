@@ -1,6 +1,5 @@
 package redot.neverdox.model;
 
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
@@ -13,10 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static redot.neverdox.util.Serialization.tryIO;
 
@@ -31,16 +27,16 @@ public class Webhook {
     private long dispatchCount;
     @Getter
     private final UUID identifier = UUID.randomUUID();
-    private final Set<Phrase> allPhrases;
+    private final LinkedList<Phrase> allPhrases;
 
     public Webhook(String link, Set<Phrase> phrases) {
         this.webhookLink = link;
-        this.allPhrases = Sets.newHashSet(phrases);
+        this.allPhrases = new LinkedList<>(phrases);
         this.dispatchCount = 1;
     }
 
     public void addPhrase(Phrase phrase) {
-        allPhrases.add(phrase);
+        allPhrases.addFirst(phrase);
         savePhrases();
     }
 
@@ -84,7 +80,7 @@ public class Webhook {
         });
 
         String payload = "{\"content\":\"" + (filter.isPing() ? "@everyone\\n" : "") + "**NeverDox Dispatch #"
-					+ this.dispatchCount + "**\\nFiltered terms: *" + filters + "*\\n```"
+					+ this.dispatchCount++ + "**\\nFiltered terms: *" + filters + "*\\n```"
 					+ message + "```\", \"username\":\"NeverDox\"}";
 
         tryIO(() -> {
@@ -106,8 +102,6 @@ public class Webhook {
         });
 
         connection.disconnect();
-
-        this.dispatchCount += 1;
         Serialization.serializeWebhooks();
     }
 

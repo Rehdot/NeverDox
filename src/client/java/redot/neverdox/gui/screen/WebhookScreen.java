@@ -1,5 +1,6 @@
 package redot.neverdox.gui.screen;
 
+import lombok.experimental.ExtensionMethod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -7,45 +8,40 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import redot.neverdox.NeverDox;
-import redot.neverdox.model.Webhook;
-import redot.neverdox.model.WebhookManager;
 import redot.neverdox.gui.field.WebhookField;
 import redot.neverdox.gui.util.NDButtonWidget;
-import redot.neverdox.util.Serialization;
+import redot.neverdox.model.Webhook;
+import redot.neverdox.model.WebhookManager;
+import redot.neverdox.util.Constants;
+import redot.neverdox.util.Extensions;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
-public class WebhookScreen extends Screen {
+@ExtensionMethod(Extensions.class)
+public class WebhookScreen extends PaginatedScreen<WebhookField> {
 
-    private int webhookY = 0;
-    private LinkedHashSet<WebhookField> fields;
-    private ButtonWidget backButton, addButton, toggleButton;
-    private final Screen parent;
+    private ButtonWidget toggleButton;
 
     public WebhookScreen(Text title, Screen parent) {
-        super(title);
-        this.parent = parent;
+        super(title, parent);
     }
 
     @Override
     protected void init() {
         super.init();
 
-        this.webhookY = 80;
-
-        this.addButton = new NDButtonWidget(this.width / 2 - 50, 40, 100, 20, Text.literal("Add Webhook"), button -> {
-            saveInfo();
-            addWebhookField(new Webhook("", Set.of()));
+        this.toggleButton = new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled?"En":"Dis")+"abled"), button -> {
+            NeverDox.enabled = !NeverDox.enabled;
+            this.saveInfo();
+            this.redraw();
         });
 
-        this.backButton = new NDButtonWidget(this.width / 2 - 50, this.height - 30, 100, 20, Text.literal("Back"), button -> {
-            saveInfo();
-            this.client.setScreen(parent);
-        });
-
-        this.reinitializeFields();
+        this.redraw();
     }
 
     @Override
@@ -54,82 +50,79 @@ public class WebhookScreen extends Screen {
         saveInfo();
     }
 
-    private void saveInfo() {
-        // save all webhook texts to their objects
-        fields.forEach(field -> field.getWebhook().setWebhookLink(field.getTextFieldWidget().getText()));
+    @Override
+    protected void saveInfo() {
+        fields.forEach(field -> field.getWebhook().setWebhookLink(field.getTextFieldWidgets().stream()
+                .findFirst()
+                .get()
+                .getText()));
 
-        // find all webhooks that aren't currently in directory
         List<Webhook> newWebhooks = fields.stream()
                 .map(WebhookField::getWebhook)
                 .filter(webhook -> !WebhookManager.hasWebhook(webhook))
                 .toList();
 
-        // add missing webhooks; save all
         WebhookManager.addWebhooks(newWebhooks);
-        Serialization.serializeWebhooks();
+    }
+
+    @Override
+    protected NDButtonWidget getAddElementButton() {
+        return new NDButtonWidget(this.width / 2 - 50, 40, 100, 20, Text.literal("Add Webhook"), button -> {
+            this.saveInfo();
+            this.addWebhookField(new Webhook("", Set.of()));
+        });
     }
 
     private void addWebhookField(Webhook webhook) {
         fields.add(initWebhookField(webhook));
         WebhookManager.addWebhook(webhook);
 
-        saveInfo();
-        this.reinitializeFields();
+        this.saveInfo();
+        this.redraw();
     }
 
     private void removeWebhookField(Webhook webhook) {
         UUID uuid = webhook.getIdentifier();
-        WebhookField targetField = fields.stream()
+        WebhookField targetField = this.fields.stream()
                 .filter(field -> field.getWebhook().getIdentifier() == uuid)
                 .findFirst()
                 .get();
 
-        fields.remove(targetField);
+        this.fields.remove(targetField);
         WebhookManager.removeWebhook(targetField.getWebhook());
-
-        this.reinitializeFields();
     }
 
     private WebhookField initWebhookField(Webhook webhook) {
-        TextFieldWidget webhookTextField = new TextFieldWidget(this.textRenderer, 20, webhookY, 200, 20, Text.literal("Webhook"));
+        if (this.elementY > 410) this.resetY();
+
+        TextFieldWidget webhookTextField = new TextFieldWidget(this.textRenderer, 20, this.elementY, 200, 20, Text.literal("Webhook"));
         webhookTextField.setMaxLength(150);
         webhookTextField.setText(webhook.getWebhookLink());
 
-        ButtonWidget settingsButton = new NDButtonWidget(230, webhookY, 50, 20, Text.literal("Settings"), button -> {
-            saveInfo();
-            this.client.setScreen(new WebhookSettingsScreen(webhook, this));
+        ButtonWidget settingsButton = new NDButtonWidget(230, this.elementY, 50, 20, Text.literal("Settings"), button -> {
+            this.saveInfo();
+            Constants.client.setScreen(new WebhookSettingsScreen(webhook, this));
         });
 
-        ButtonWidget deleteButton = new NDButtonWidget(290, webhookY, 50, 20, Text.literal("Delete"), button -> {
+        ButtonWidget deleteButton = new NDButtonWidget(290, this.elementY, 50, 20, Text.literal("Delete"), button -> {
             removeWebhookField(webhook);
-            saveInfo();
+            this.saveInfo();
+            this.redraw();
         });
 
-        webhookY += 30;
+        this.elementY += 30;
         return new WebhookField(webhook, webhookTextField, settingsButton, deleteButton);
     }
 
-    private void reinitializeFields() {
-        this.clearChildren();
+    @Override
+    public void redraw() {
+        this.resetY();
 
-        webhookY = 80;
         this.fields = WebhookManager.getWebhooks().stream()
                 .map(this::initWebhookField)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedList::new));
 
-        this.toggleButton = new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled?"En":"Dis")+"abled"), button -> {
-            NeverDox.enabled = !NeverDox.enabled;
-            this.reinitializeFields();
-        });
-
-        this.addDrawableChild(addButton);
-        this.addDrawableChild(backButton);
-        this.addDrawableChild(toggleButton);
-
-        fields.forEach(field -> {
-            this.addDrawableChild(field.getTextFieldWidget());
-            this.addDrawableChild(field.getSettingsButton());
-            this.addDrawableChild(field.getDeleteButton());
-        });
+        super.redraw();
+        this.addDrawableChild(this.toggleButton);
     }
 }

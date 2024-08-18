@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
 import redot.neverdox.util.Extensions;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.concurrent.LinkedBlockingDeque;
 
 @Getter
 @ExtensionMethod(Extensions.class)
@@ -16,14 +16,7 @@ public class Filter {
     private final LinkedHashSet<String> terms;
     private boolean ping;
 
-    public Filter(Webhook webhook, String term, boolean ping) {
-        this.webhook = webhook;
-        this.terms = Sets.newLinkedHashSet();
-        this.ping = ping;
-        terms.add(term);
-    }
-
-    public Filter(Webhook webhook, LinkedBlockingDeque<String> terms, boolean ping) {
+    public Filter(Webhook webhook, Collection<String> terms, boolean ping) {
         this.webhook = webhook;
         this.terms = Sets.newLinkedHashSet(terms);
         this.ping = ping;
@@ -43,7 +36,7 @@ public class Filter {
         return this;
     }
 
-    public Filter addTerms(LinkedBlockingDeque<String> terms) {
+    public Filter addTerms(Collection<String> terms) {
         this.terms.addAll(terms);
         return this;
     }

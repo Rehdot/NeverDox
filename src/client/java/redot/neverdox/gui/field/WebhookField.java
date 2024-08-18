@@ -5,18 +5,24 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import redot.neverdox.model.Webhook;
 
+import java.util.List;
+import java.util.Set;
+
 @Getter
-public class WebhookField {
+public class WebhookField extends Field {
 
     private final Webhook webhook;
-    private final TextFieldWidget textFieldWidget;
-    private final ButtonWidget settingsButton, deleteButton;
+    private final ButtonWidget settingsButton;
 
     public WebhookField(Webhook webhook, TextFieldWidget textFieldWidget, ButtonWidget settingsButton, ButtonWidget deleteButton) {
+        super(deleteButton, Set.of(textFieldWidget));
         this.webhook = webhook;
-        this.textFieldWidget = textFieldWidget;
         this.settingsButton = settingsButton;
-        this.deleteButton = deleteButton;
+    }
+
+    @Override
+    public List<? extends ButtonWidget> getButtons() {
+        return List.of(this.settingsButton, this.getDeleteButton());
     }
 
 }

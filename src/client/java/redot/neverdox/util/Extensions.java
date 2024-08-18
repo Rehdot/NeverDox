@@ -71,9 +71,11 @@ public class Extensions {
         }
     }
 
+    // aims to be more a performant and clean null check
     public static <T> T ifNull(T in, Runnable code) {
-        if (in == null) code.run();
-        return in;
+        if (in != null) return in;
+        code.run();
+        return null;
     }
 
 }

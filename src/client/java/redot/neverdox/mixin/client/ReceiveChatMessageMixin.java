@@ -1,12 +1,12 @@
 package redot.neverdox.mixin.client;
 
-import redot.neverdox.NeverDox;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import redot.neverdox.NeverDox;
 import redot.neverdox.util.Constants;
 
 import java.util.concurrent.CompletableFuture;
