@@ -21,7 +21,7 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
 
     public int elementY = this.resetY(), pageIndex;
     public final Screen parent;
-    public ButtonWidget backButton;
+    public ButtonWidget backButton, addElementButton;
     private PageTurnWidget pageLeft, pageRight;
     public LinkedList<T> fields;
 
@@ -34,6 +34,7 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
     protected void init() {
         super.init();
         this.pageIndex = 0;
+        this.addElementButton = this.getAddElementButton();
 
         this.backButton = new NDButtonWidget(this.width / 2 - 50, this.height - 30, 100, 20, Text.literal("Back"), button -> {
             this.saveInfo();
@@ -52,6 +53,12 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
             this.redraw();
         }, false);
 
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        this.saveInfo();
     }
 
     protected void redraw() {
@@ -88,6 +95,6 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
     }
 
     protected abstract void saveInfo();
-    protected abstract NDButtonWidget getAddElementButton();
+    protected abstract ButtonWidget getAddElementButton();
 
 }

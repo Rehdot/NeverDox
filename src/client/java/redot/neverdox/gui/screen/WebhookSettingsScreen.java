@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import redot.neverdox.gui.field.PhraseField;
@@ -41,12 +42,6 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
     }
 
     @Override
-    public void close() {
-        super.close();
-        this.saveInfo();
-    }
-
-    @Override
     protected void saveInfo() {
         this.fields.forEach(field -> field.getPhrase().setTexts(field.getTextFieldWidgets().stream()
                 .map(TextFieldWidget::getText)
@@ -62,7 +57,7 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
     }
 
     @Override
-    protected NDButtonWidget getAddElementButton() {
+    protected ButtonWidget getAddElementButton() {
         return new NDButtonWidget(this.width / 2 - 50, 40, 100, 20, Text.literal("Add Phrase"), button -> {
             this.addPhraseField(new Phrase("New Filter", false, false));
         });
@@ -81,19 +76,19 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
             phraseTextFields.add(phraseTextField);
         });
 
-        NDButtonWidget pingsButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Pings " + (phrase.isPinged() ? "En" : "Dis") + "abled"), button -> {
+        ButtonWidget pingsButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Pings " + (phrase.isPinged() ? "En" : "Dis") + "abled"), button -> {
             phrase.setPinged(!phrase.isPinged());
             this.saveInfo();
             this.redraw();
         });
 
-        NDButtonWidget exemptButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal((phrase.isExempt() ? "Is" : "Not") + " Exempt"), button -> {
+        ButtonWidget exemptButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal((phrase.isExempt() ? "Is" : "Not") + " Exempt"), button -> {
             phrase.setExempt(!phrase.isExempt());
             this.saveInfo();
             this.redraw();
         });
 
-        NDButtonWidget addTextToPhraseButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Add Text"), button -> {
+        ButtonWidget addTextToPhraseButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Add Text"), button -> {
             this.saveInfo();
             phrase.addText("");
             this.redraw();
@@ -101,7 +96,7 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
         });
         addTextToPhraseButton.setTooltip(Tooltip.of(Text.literal("Chat messages containing EVERY text element specified will be filtered.")));
 
-        NDButtonWidget deleteButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Delete"), button -> {
+        ButtonWidget deleteButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Delete"), button -> {
             this.removePhraseField(phrase);
             saveInfo();
             this.redraw();

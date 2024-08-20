@@ -29,7 +29,7 @@ public class Extensions {
                     .filter(Phrase::isExempt)
                     .map(Phrase::getTexts)
                     .forEach(exemptions -> exemptions
-                            .forEach(exemption -> cleaned.set(cleaned.get().replace(exemption, ""))));
+                            .forEach(exemption -> cleaned.set(cleaned.get().replace(exemption.toLowerCase(), ""))));
 
             // check remaining string for non-exempt, set filter specifications
             phrases.stream()

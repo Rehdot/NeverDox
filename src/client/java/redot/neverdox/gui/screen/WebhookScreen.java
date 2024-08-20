@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 @ExtensionMethod(Extensions.class)
 public class WebhookScreen extends PaginatedScreen<WebhookField> {
 
-    private ButtonWidget toggleButton;
-
     public WebhookScreen(Text title, Screen parent) {
         super(title, parent);
     }
@@ -34,20 +32,7 @@ public class WebhookScreen extends PaginatedScreen<WebhookField> {
     @Override
     protected void init() {
         super.init();
-
-        this.toggleButton = new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled?"En":"Dis")+"abled"), button -> {
-            NeverDox.enabled = !NeverDox.enabled;
-            this.saveInfo();
-            this.redraw();
-        });
-
         this.redraw();
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        saveInfo();
     }
 
     @Override
@@ -66,10 +51,18 @@ public class WebhookScreen extends PaginatedScreen<WebhookField> {
     }
 
     @Override
-    protected NDButtonWidget getAddElementButton() {
+    protected ButtonWidget getAddElementButton() {
         return new NDButtonWidget(this.width / 2 - 50, 40, 100, 20, Text.literal("Add Webhook"), button -> {
             this.saveInfo();
             this.addWebhookField(new Webhook("", Set.of()));
+        });
+    }
+
+    private ButtonWidget getToggleButton() {
+        return new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled?"En":"Dis")+"abled"), button -> {
+            NeverDox.enabled = !NeverDox.enabled;
+            this.saveInfo();
+            this.redraw();
         });
     }
 
@@ -123,6 +116,6 @@ public class WebhookScreen extends PaginatedScreen<WebhookField> {
                 .collect(Collectors.toCollection(LinkedList::new));
 
         super.redraw();
-        this.addDrawableChild(this.toggleButton);
+        this.addDrawableChild(this.getToggleButton());
     }
 }
