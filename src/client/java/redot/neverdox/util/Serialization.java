@@ -1,9 +1,9 @@
 package redot.neverdox.util;
 
 import lombok.experimental.ExtensionMethod;
-import redot.neverdox.action.IOAction;
-import redot.neverdox.action.ReadAction;
-import redot.neverdox.action.WriteAction;
+import org.jetbrains.annotations.Nullable;
+import redot.neverdox.action.Action;
+import redot.neverdox.action.ExceptionAction;
 import redot.neverdox.model.Webhook;
 import redot.neverdox.model.WebhookManager;
 
@@ -52,19 +52,20 @@ public class Serialization {
         tryWrite(writer -> gson.toJson(WebhookManager.getWebhooks(), writer));
     }
 
-    static void tryWrite(WriteAction writerAction) {
+    static void tryWrite(Action<FileWriter> writerAction) {
         try (FileWriter writer = new FileWriter(getWebhookFile())) {
             writerAction.execute(writer);
         } catch (IOException ignored) {}
     }
 
-    static void tryRead(ReadAction readerAction) {
+    static void tryRead(Action<FileReader> readerAction) {
         try (FileReader reader = new FileReader(getWebhookFile())) {
             readerAction.execute(reader);
         } catch (IOException ignored) {}
     }
 
-    public static String tryIO(IOAction ioAction) {
+    @Nullable
+    public static String tryIO(ExceptionAction<IOException> ioAction) {
         try {
             ioAction.execute();
             return "Success";

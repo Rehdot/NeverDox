@@ -26,16 +26,6 @@ public class Filter {
         return this.webhook.getIdentifier() == webhook.getIdentifier();
     }
 
-    public Filter setWebhook(Webhook webhook) {
-        this.webhook = webhook;
-        return this;
-    }
-
-    public Filter addTerm(String term) {
-        terms.add(term);
-        return this;
-    }
-
     public Filter addTerms(Collection<String> terms) {
         this.terms.addAll(terms);
         return this;

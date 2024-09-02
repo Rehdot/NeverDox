@@ -4,20 +4,17 @@ import lombok.Getter;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList;
 
 @Getter
 public abstract class Field {
 
-    private final ButtonWidget deleteButton;
-    private final Set<TextFieldWidget> textFieldWidgets;
+    private final ArrayList<TextFieldWidget> textFieldWidgets;
+    private final ArrayList<ButtonWidget> buttons;
 
-    public Field(ButtonWidget deleteButton, Set<TextFieldWidget> textFieldWidgets) {
-        this.deleteButton = deleteButton;
+    public Field(ArrayList<TextFieldWidget> textFieldWidgets, ArrayList<ButtonWidget> buttons) {
         this.textFieldWidgets = textFieldWidgets;
+        this.buttons = buttons;
     }
-
-    public abstract List<? extends ButtonWidget> getButtons();
 
 }

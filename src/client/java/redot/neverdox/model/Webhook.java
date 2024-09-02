@@ -22,8 +22,6 @@ public class Webhook {
     @Getter @Setter
     private String webhookLink;
     @Getter @Setter
-    private boolean enabled;
-    @Getter @Setter
     private long dispatchCount;
     @Getter
     private final UUID identifier = UUID.randomUUID();
@@ -65,7 +63,7 @@ public class Webhook {
     public void sendToDiscord(String message, Filter filter) {
         message = message.replace("\"", "\\\"");
         String filters = String.join(", ", filter.getTerms());
-        URL url = this.webhookLink.makeURL().ifNull(() -> {
+        URL url = this.webhookLink.newURL().ifNull(() -> {
             throw new NDException("Webhook Failure - Bad URL: " + this.webhookLink);
         });
         HttpURLConnection connection = url.getConnection().ifNull(() -> {

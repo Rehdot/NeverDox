@@ -5,6 +5,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import redot.neverdox.model.Phrase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,19 +13,10 @@ import java.util.Set;
 public class PhraseField extends Field {
 
     private final Phrase phrase;
-    private final ButtonWidget pingsButton, exemptButton, addTextButton;
 
-    public PhraseField(Phrase phrase, Set<TextFieldWidget> textFieldWidgets, ButtonWidget pingsButton, ButtonWidget exemptButton, ButtonWidget addTextButton, ButtonWidget deleteButton) {
-        super(deleteButton, textFieldWidgets);
+    public PhraseField(Phrase phrase, ArrayList<TextFieldWidget> textFieldWidgets, ArrayList<ButtonWidget> buttons) {
+        super(textFieldWidgets, buttons);
         this.phrase = phrase;
-        this.pingsButton = pingsButton;
-        this.exemptButton = exemptButton;
-        this.addTextButton = addTextButton;
-    }
-
-    @Override
-    public List<? extends ButtonWidget> getButtons() {
-        return List.of(pingsButton, exemptButton, addTextButton, this.getDeleteButton());
     }
 
 }

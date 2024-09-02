@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.PageTurnWidget;
 import net.minecraft.text.Text;
 import redot.neverdox.gui.field.Field;
 import redot.neverdox.gui.util.NDButtonWidget;
+import redot.neverdox.model.Phrase;
 import redot.neverdox.util.Constants;
 import redot.neverdox.util.Extensions;
 import redot.neverdox.util.NDException;

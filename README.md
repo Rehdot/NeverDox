@@ -1,4 +1,4 @@
-NeverDox 1.0.6
+NeverDox 1.0.7
 -
 NeverDox is a client-side Minecraft mod to keep players safe on public servers.
 It's intended to be a moderation tool which reports in-game chat messages to discord webhooks based upon the filters & exemptions that its user provides.
@@ -30,3 +30,8 @@ If I wanted to log for the word "house" but not "doghouse", I'd add "house" as a
 Doubles
 -
 If I wanted to log messages containing **both** "baby" and "blue", I'd make a phrase containing "baby", click "Add Text", and add "blue".
+
+Regex
+-
+NeverDox phrases can use Regex's pattern matching if enabled - 
+(https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)

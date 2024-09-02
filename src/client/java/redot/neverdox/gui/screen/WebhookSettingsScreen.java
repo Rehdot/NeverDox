@@ -9,18 +9,18 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import org.apache.commons.compress.utils.Lists;
+import redot.neverdox.gui.field.Field;
 import redot.neverdox.gui.field.PhraseField;
 import redot.neverdox.gui.util.NDButtonWidget;
+import redot.neverdox.gui.util.SmartBoolean;
 import redot.neverdox.model.Phrase;
 import redot.neverdox.model.Webhook;
 import redot.neverdox.util.Extensions;
 import redot.neverdox.util.NDException;
 import redot.neverdox.util.Serialization;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
     private final Webhook webhook;
 
     public WebhookSettingsScreen(Webhook webhook, Screen parent) {
-        super(Text.literal("Filter Phrases"), parent);
+        super(Text.literal("Filtered Phrases"), parent);
         this.webhook = webhook;
     }
 
@@ -45,7 +45,7 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
     protected void saveInfo() {
         this.fields.forEach(field -> field.getPhrase().setTexts(field.getTextFieldWidgets().stream()
                 .map(TextFieldWidget::getText)
-                .collect(Collectors.toCollection(LinkedList::new))));
+                .collect(Collectors.toCollection(ArrayList::new))));
 
         List<Phrase> newPhrases = this.fields.stream()
                 .map(PhraseField::getPhrase)
@@ -65,45 +65,73 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
 
     private PhraseField initPhraseField(Phrase phrase) {
         AtomicInteger xValue = new AtomicInteger(20);
-        Set<TextFieldWidget> phraseTextFields = Sets.newHashSet();
+        ArrayList<TextFieldWidget> textFields = new ArrayList<>();
+        ArrayList<ButtonWidget> buttons = new ArrayList<>();
 
-        if (this.elementY > 410) this.elementY = 70;
+        if (this.elementY > 410) this.resetY();
 
         phrase.getTexts().forEach(text -> {
-            TextFieldWidget phraseTextField = new TextFieldWidget(this.textRenderer, xValue.getAndAdd(160), this.elementY, 150, 20, Text.literal("Phrase"));
-            phraseTextField.setMaxLength(150);
-            phraseTextField.setText(text);
-            phraseTextFields.add(phraseTextField);
+            new TextFieldWidget(this.textRenderer, xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Phrase")).apply(widget -> {
+                widget.setMaxLength(300);
+                widget.setText(text);
+                textFields.add(widget);
+                return true;
+            });
         });
 
-        ButtonWidget pingsButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Pings " + (phrase.isPinged() ? "En" : "Dis") + "abled"), button -> {
-            phrase.setPinged(!phrase.isPinged());
+        new NDButtonWidget(xValue.get(), this.elementY, 80, 20, Text.literal("Ping " + (phrase.isPinged() ? "En" : "Dis") + "abled"), button -> {
+            phrase.pinged.invert();
             this.saveInfo();
             this.redraw();
+        }).apply(button -> {
+            if (!phrase.isExempt()) {
+                xValue.getAndAdd(90);
+                buttons.add(button);
+            }
+            return true;
         });
 
-        ButtonWidget exemptButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal((phrase.isExempt() ? "Is" : "Not") + " Exempt"), button -> {
-            phrase.setExempt(!phrase.isExempt());
+        new NDButtonWidget(xValue.get(), this.elementY, 80, 20, Text.literal((phrase.isExempt() ? "Is" : "Not") + " Exempt"), button -> {
+            phrase.exempt.invert();
             this.saveInfo();
             this.redraw();
+        }).apply(button -> {
+            if (!phrase.isPinged()) {
+                xValue.getAndAdd(90);
+                buttons.add(button);
+            }
+            return true;
         });
 
-        ButtonWidget addTextToPhraseButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Add Text"), button -> {
+        new NDButtonWidget(xValue.getAndAdd(100), this.elementY, 90, 20, Text.literal("Regex " + (phrase.isRegex() ? "En" : "Dis") + "abled"), button -> {
+            phrase.regex.invert();
+            this.saveInfo();
+            this.redraw();
+        }).apply(button -> {
+            button.setTooltip(Tooltip.of(Text.literal("Parses this phrase using Regex.")));
+            buttons.add(button);
+            return true;
+        });
+
+        new NDButtonWidget(xValue.getAndAdd(70), this.elementY, 60, 20, Text.literal("Add Text"), button -> {
             this.saveInfo();
             phrase.addText("");
             this.redraw();
             this.saveInfo();
+        }).apply(button -> {
+            button.setTooltip(Tooltip.of(Text.literal("Chat messages containing EVERY text element specified will be filtered.")));
+            buttons.add(button);
+            return true;
         });
-        addTextToPhraseButton.setTooltip(Tooltip.of(Text.literal("Chat messages containing EVERY text element specified will be filtered.")));
 
-        ButtonWidget deleteButton = new NDButtonWidget(xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Delete"), button -> {
+        new NDButtonWidget(xValue.getAndAdd(70), this.elementY, 60, 20, Text.literal("Delete"), button -> {
             this.removePhraseField(phrase);
-            saveInfo();
+            this.saveInfo();
             this.redraw();
-        });
+        }).apply(buttons::add);
 
         this.elementY += 30;
-        return new PhraseField(phrase, phraseTextFields, pingsButton, exemptButton, addTextToPhraseButton, deleteButton);
+        return new PhraseField(phrase, textFields, buttons);
     }
 
     private void addPhraseField(Phrase phrase) {
