@@ -8,17 +8,19 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import redot.neverdox.action.Action;
 import redot.neverdox.util.Constants;
 import redot.neverdox.util.Extensions;
 import redot.neverdox.util.Messenger;
 import redot.neverdox.util.Serialization;
+
+import java.util.function.Consumer;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 @ExtensionMethod(Extensions.class)
 public class NeverDox implements ClientModInitializer {
+
 	public static boolean sentPopup = false, enabled = true;
 
 	@Override
@@ -35,10 +37,7 @@ public class NeverDox implements ClientModInitializer {
 				}))
 				.then(registerPhraseExecutor("echo", Messenger::sendChatMessage))
 				.then(registerExecutor("open", Serialization::openFile))
-		).apply(obj -> {
-			dispatcher.register(literal("neverdox").redirect(obj));
-			return obj;
-		});
+		).consume(obj -> dispatcher.register(literal("neverdox").redirect(obj)));
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerExecutor(String name, Runnable executor) {
@@ -48,10 +47,10 @@ public class NeverDox implements ClientModInitializer {
 		});
 	}
 
-	private static LiteralArgumentBuilder<FabricClientCommandSource> registerPhraseExecutor(String name, Action<String> action) {
+	private static LiteralArgumentBuilder<FabricClientCommandSource> registerPhraseExecutor(String name, Consumer<String> action) {
 		return literal(name).then(argument("phrase", StringArgumentType.greedyString()).executes(context -> {
 			String phrase = StringArgumentType.getString(context, "phrase");
-			action.execute(phrase);
+			action.accept(phrase);
 			return 1;
 		}));
 	}

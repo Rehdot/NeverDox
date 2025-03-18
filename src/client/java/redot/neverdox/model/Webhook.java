@@ -26,6 +26,8 @@ public class Webhook {
     @Getter
     private final UUID identifier = UUID.randomUUID();
     private final LinkedList<Phrase> allPhrases;
+    @Getter @Setter
+    private boolean spamDetecting = false;
 
     public Webhook(String link, Set<Phrase> phrases) {
         this.webhookLink = link;

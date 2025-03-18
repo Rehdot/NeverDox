@@ -18,18 +18,16 @@ import java.util.Set;
 public class Constants {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("NeverDox");
-    public static MinecraftClient client = MinecraftClient.getInstance();
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static Type webhookListType = new TypeToken<List<Webhook>>() {}.getType();
-    public static final String appDataDir = System.getenv("APPDATA"),
-            minecraftDir = appDataDir + "/.minecraft",
-            filePath = minecraftDir + "/NeverDoxConfig.json";
+    public static MinecraftClient CLIENT = MinecraftClient.getInstance();
+    public static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static Type LIST_TYPE = new TypeToken<List<Webhook>>() {}.getType();
+    public static final String APPDATA_DIR = System.getenv("APPDATA"),
+            MC_DIR = APPDATA_DIR + "/.minecraft",
+            FILE_PATH = MC_DIR + "/NeverDoxConfig.json";
 
-    public static void handleMessage(String message) {
-        Set<Filter> filters = message.getFilters();
-
+    public static void handleMessage(final String message) {
+        Set<Filter> filters = Filter.allFiltersContaining(message);
         if (filters.isEmpty()) return;
-
         filters.forEach(filter -> filter.getWebhook().sendToDiscord(message, filter));
     }
 

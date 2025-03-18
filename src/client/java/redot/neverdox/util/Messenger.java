@@ -19,8 +19,8 @@ public class Messenger {
     }
 
     public static void sendPopupText(Text text) {
-        SystemToast popup = SystemToast.create(Constants.client, SystemToast.Type.PERIODIC_NOTIFICATION, ND_TEXT, text);
-        Constants.client.getToastManager().add(popup);
+        SystemToast popup = SystemToast.create(Constants.CLIENT, SystemToast.Type.PERIODIC_NOTIFICATION, ND_TEXT, text);
+        Constants.CLIENT.getToastManager().add(popup);
     }
 
     public static void sendErrorText(String text) {
@@ -30,7 +30,7 @@ public class Messenger {
     }
 
     public static void sendChatMessage(String message) {
-        Constants.client.player.ifNull(() -> {
+        Constants.CLIENT.player.ifNull(() -> {
             throw new RuntimeException("Player was null, could not send designated message: " + message);
         }).sendMessage(ND_TEXT.copy()
                 .append(Text.literal(" | ")

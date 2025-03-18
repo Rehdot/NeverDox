@@ -1,6 +1,5 @@
 package redot.neverdox.gui.screen;
 
-import com.google.common.collect.Sets;
 import lombok.experimental.ExtensionMethod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,11 +8,8 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
-import org.apache.commons.compress.utils.Lists;
-import redot.neverdox.gui.field.Field;
 import redot.neverdox.gui.field.PhraseField;
 import redot.neverdox.gui.util.NDButtonWidget;
-import redot.neverdox.gui.util.SmartBoolean;
 import redot.neverdox.model.Phrase;
 import redot.neverdox.model.Webhook;
 import redot.neverdox.util.Extensions;
@@ -56,6 +52,14 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
         Serialization.serializeWebhooks();
     }
 
+    protected ButtonWidget getSpamDetectionButton() {
+        return new NDButtonWidget(this.width - 150, 40, 125, 20, Text.literal("Spam Detection " + (webhook.isSpamDetecting() ? "En" : "Dis") + "abled"), button -> {
+            this.webhook.setSpamDetecting(!this.webhook.isSpamDetecting());
+            this.saveInfo();
+            this.redraw();
+        });
+    }
+
     @Override
     protected ButtonWidget getAddElementButton() {
         return new NDButtonWidget(this.width / 2 - 50, 40, 100, 20, Text.literal("Add Phrase"), button -> {
@@ -71,11 +75,10 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
         if (this.elementY > 410) this.resetY();
 
         phrase.getTexts().forEach(text -> {
-            new TextFieldWidget(this.textRenderer, xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Phrase")).apply(widget -> {
+            new TextFieldWidget(this.textRenderer, xValue.getAndAdd(110), this.elementY, 100, 20, Text.literal("Phrase")).consume(widget -> {
                 widget.setMaxLength(300);
                 widget.setText(text);
                 textFields.add(widget);
-                return true;
             });
         });
 
@@ -83,34 +86,31 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
             phrase.pinged.invert();
             this.saveInfo();
             this.redraw();
-        }).apply(button -> {
+        }).consume(button -> {
             if (!phrase.isExempt()) {
                 xValue.getAndAdd(90);
                 buttons.add(button);
             }
-            return true;
         });
 
         new NDButtonWidget(xValue.get(), this.elementY, 80, 20, Text.literal((phrase.isExempt() ? "Is" : "Not") + " Exempt"), button -> {
             phrase.exempt.invert();
             this.saveInfo();
             this.redraw();
-        }).apply(button -> {
+        }).consume(button -> {
             if (!phrase.isPinged()) {
                 xValue.getAndAdd(90);
                 buttons.add(button);
             }
-            return true;
         });
 
         new NDButtonWidget(xValue.getAndAdd(100), this.elementY, 90, 20, Text.literal("Regex " + (phrase.isRegex() ? "En" : "Dis") + "abled"), button -> {
             phrase.regex.invert();
             this.saveInfo();
             this.redraw();
-        }).apply(button -> {
+        }).consume(button -> {
             button.setTooltip(Tooltip.of(Text.literal("Parses this phrase using Regex.")));
             buttons.add(button);
-            return true;
         });
 
         new NDButtonWidget(xValue.getAndAdd(70), this.elementY, 60, 20, Text.literal("Add Text"), button -> {
@@ -118,17 +118,16 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
             phrase.addText("");
             this.redraw();
             this.saveInfo();
-        }).apply(button -> {
+        }).consume(button -> {
             button.setTooltip(Tooltip.of(Text.literal("Chat messages containing EVERY text element specified will be filtered.")));
             buttons.add(button);
-            return true;
         });
 
         new NDButtonWidget(xValue.getAndAdd(70), this.elementY, 60, 20, Text.literal("Delete"), button -> {
             this.removePhraseField(phrase);
             this.saveInfo();
             this.redraw();
-        }).apply(buttons::add);
+        }).consume(buttons::add);
 
         this.elementY += 30;
         return new PhraseField(phrase, textFields, buttons);
@@ -164,6 +163,7 @@ public class WebhookSettingsScreen extends PaginatedScreen<PhraseField> {
                 .collect(Collectors.toCollection(LinkedList::new));
 
         super.redraw();
+        this.addDrawableChild(this.getSpamDetectionButton());
     }
 
 }

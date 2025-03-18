@@ -56,7 +56,7 @@ public class WebhookScreen extends PaginatedScreen<WebhookField> {
     }
 
     private ButtonWidget getToggleButton() {
-        return new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled?"En":"Dis")+"abled"), button -> {
+        return new NDButtonWidget(this.width / 2 - 200, 40, 100, 20, Text.literal("NeverDox "+(NeverDox.enabled ?"En":"Dis")+"abled"), button -> {
             NeverDox.enabled = !NeverDox.enabled;
             this.saveInfo();
             this.redraw();
@@ -85,28 +85,23 @@ public class WebhookScreen extends PaginatedScreen<WebhookField> {
     private WebhookField initWebhookField(Webhook webhook) {
         if (this.elementY > 410) this.resetY();
 
-        TextFieldWidget webhookTextField = new TextFieldWidget(this.textRenderer, 20, this.elementY, 200, 20, Text.literal("Webhook"));
         ArrayList<ButtonWidget> buttons = new ArrayList<>();
-
-        webhookTextField.setMaxLength(150);
-        webhookTextField.setText(webhook.getWebhookLink());
+        TextFieldWidget webhookTextField = new TextFieldWidget(this.textRenderer, 20, this.elementY, 200, 20, Text.literal("Webhook")).apply(field -> {
+            field.setMaxLength(150);
+            field.setText(webhook.getWebhookLink());
+            return field;
+        });
 
         new NDButtonWidget(230, this.elementY, 50, 20, Text.literal("Settings"), button -> {
             this.saveInfo();
-            Constants.client.setScreen(new WebhookSettingsScreen(webhook, this));
-        }).apply(button -> {
-            buttons.add(button);
-            return true;
-        });
+            Constants.CLIENT.setScreen(new WebhookSettingsScreen(webhook, this));
+        }).consume(buttons::add);
 
         new NDButtonWidget(290, this.elementY, 50, 20, Text.literal("Delete"), button -> {
             removeWebhookField(webhook);
             this.saveInfo();
             this.redraw();
-        }).apply(button -> {
-            buttons.add(button);
-            return true;
-        });
+        }).consume(buttons::add);
 
         this.elementY += 30;
         return new WebhookField(webhook, webhookTextField, buttons);

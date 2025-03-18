@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 public class NDButtonWidget extends ButtonWidget {
+
     public NDButtonWidget(int x, int y, int width, int height, Text message, PressAction onPress) {
         super(x, y, width, height, message, onPress, Supplier::get);
     }

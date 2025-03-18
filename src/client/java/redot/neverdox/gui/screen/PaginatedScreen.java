@@ -9,7 +9,6 @@ import net.minecraft.client.gui.widget.PageTurnWidget;
 import net.minecraft.text.Text;
 import redot.neverdox.gui.field.Field;
 import redot.neverdox.gui.util.NDButtonWidget;
-import redot.neverdox.model.Phrase;
 import redot.neverdox.util.Constants;
 import redot.neverdox.util.Extensions;
 import redot.neverdox.util.NDException;
@@ -39,7 +38,7 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
 
         this.backButton = new NDButtonWidget(this.width / 2 - 50, this.height - 30, 100, 20, Text.literal("Back"), button -> {
             this.saveInfo();
-            Constants.client.setScreen(this.parent);
+            Constants.CLIENT.setScreen(this.parent);
         });
 
         this.pageLeft = new PageTurnWidget(this.width / 2 - 150, this.height - 30, false, button -> {
@@ -73,12 +72,12 @@ public abstract class PaginatedScreen<T extends Field> extends Screen {
         for (int i = index; i < index + 12; i++) {
             if (i + 1 > size) break;
 
-            Field field = this.fields.get(i).ifNull(() -> {
+            this.fields.get(i).ifNull(() -> {
                 throw new NDException("Screen Failure - An element returned null.");
+            }).consume(field -> {
+                field.getTextFieldWidgets().forEach(this::addDrawableChild);
+                field.getButtons().forEach(this::addDrawableChild);
             });
-
-            field.getTextFieldWidgets().forEach(this::addDrawableChild);
-            field.getButtons().forEach(this::addDrawableChild);
         }
 
         if (!(index + 13 > size)) {

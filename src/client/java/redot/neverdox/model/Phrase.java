@@ -3,7 +3,7 @@ package redot.neverdox.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
-import redot.neverdox.gui.util.SmartBoolean;
+import redot.neverdox.util.SmartBoolean;
 import redot.neverdox.util.Extensions;
 import redot.neverdox.util.Messenger;
 

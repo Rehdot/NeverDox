@@ -2,7 +2,6 @@ package redot.neverdox.util;
 
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
-import redot.neverdox.action.Action;
 import redot.neverdox.action.ExceptionAction;
 import redot.neverdox.model.Webhook;
 import redot.neverdox.model.WebhookManager;
@@ -13,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static redot.neverdox.util.Constants.*;
 
@@ -20,7 +20,7 @@ import static redot.neverdox.util.Constants.*;
 public class Serialization {
 
     public static File getWebhookFile() {
-        File file = new File(filePath);
+        File file = new File(FILE_PATH);
         if (file.exists()) return file;
 
         tryIO(file::createNewFile);
@@ -31,7 +31,7 @@ public class Serialization {
         List<Webhook> webhooks = new ArrayList<>();
 
         tryRead(reader -> {
-            List<Webhook> deserializedWebhooks = gson.fromJson(reader, webhookListType);
+            List<Webhook> deserializedWebhooks = GSON.fromJson(reader, LIST_TYPE);
             if (deserializedWebhooks != null) {
                 webhooks.addAll(deserializedWebhooks);
             }
@@ -49,18 +49,18 @@ public class Serialization {
     }
 
     public static void serializeWebhooks() {
-        tryWrite(writer -> gson.toJson(WebhookManager.getWebhooks(), writer));
+        tryWrite(writer -> GSON.toJson(WebhookManager.getWebhooks(), writer));
     }
 
-    static void tryWrite(Action<FileWriter> writerAction) {
+    static void tryWrite(Consumer<FileWriter> writerAction) {
         try (FileWriter writer = new FileWriter(getWebhookFile())) {
-            writerAction.execute(writer);
+            writerAction.accept(writer);
         } catch (IOException ignored) {}
     }
 
-    static void tryRead(Action<FileReader> readerAction) {
+    static void tryRead(Consumer<FileReader> readerAction) {
         try (FileReader reader = new FileReader(getWebhookFile())) {
-            readerAction.execute(reader);
+            readerAction.accept(reader);
         } catch (IOException ignored) {}
     }
 
